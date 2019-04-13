@@ -111,9 +111,13 @@ AllNICrimeData$Location[AllNICrimeData$Location == ""] <- NA
 
 sum(is.na(AllNICrimeData$Location))
 
+# creating a subset of AllNICrimeData with location not contains NA
+
 new_data <- subset(AllNICrimeData, !is.na(Location), select = c(Month, Longitude, Latitude, Location, Crime.type))
 new_data
 sum(is.na(new_data$Location))
+
+# selecting 1000 random samples and saving it to a new data frame called random_crime_sample
 
 random_crime_sample <- new_data[sample(1:nrow(new_data), 1000, replace = FALSE),]  
 random_crime_sample
@@ -131,13 +135,19 @@ cleanNIPostcode$Primary.Thorfare <- toupper(cleanNIPostcode$Primary.Thorfare)
 head(random_crime_sample, 2)
 head(cleanNIPostcode, 2)
 
+# creating a new_postcode dataset with Primary thorfare and Postcode
+
 new_postcode <- cleanNIPostcode[, c(6, 13)]
 head(new_postcode, 10)
+
+# Finding the popular postcode 
 
 library(plyr)
 new_postcode <- ddply(new_postcode, .(Primary.Thorfare, Postcode), nrow)
 head(new_postcode, 10)
 str(new_postcode)
+
+# Assigning the column names to dataset
 
 colnames(new_postcode) <- c("Primary.Thorfare", "Postcode", "Number_of_Postcodes")
 
@@ -150,6 +160,7 @@ new_postcode
 new_postcode <- ddply(new_postcode, .(Primary.Thorfare, Postcode), nrow)
 colnames(new_postcode) <- c("Primary.Thorfare", "Postcode", "Number_of_Postcodes")
 str(new_postcode)
+
 # Creating a new column called Postcode in random_crime_sample
 
 random_crime_sample$Postcode <- NA
@@ -162,6 +173,8 @@ str(random_crime_sample)
 nrow(random_crime_sample)
 
 write.csv(random_crime_sample, 'C:\\Users\\sabin\\Documents\\NIpostcode\\random_crime_sample.csv') 
+
+# creating datasets
 
 updated_random_sample <- random_crime_sample 
 chart_data <- updated_random_sample
@@ -185,7 +198,7 @@ crime_type <- ddply(crime_type, .(new_chart$Crime.type), nrow)
 colnames(crime_type) <- c('Crime_type', 'Count')
 crime_type
 
-# Creating the barplot
+# Creating the barplot of crime type in chart_data
 
 crime_data <- table(chart_data$Crime.type) 
 barplot(crime_data, main = 'Frequency of crime type',
