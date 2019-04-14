@@ -1,3 +1,11 @@
+                                  # DATA SCIENCE PROJECT               
+                                 # CA2- NI POSTCODE AND CRIME DATA
+
+
+# Sabin Kaleeckal Babu
+# MSc in Big Data Analytics (L00144505)
+
+
 # Importing the .csv file into a dataframe called NI_postcode_data
 
 NI_postcode_data <- read.csv('NIPostcodes.csv', header = F)
