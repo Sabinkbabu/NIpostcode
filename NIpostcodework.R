@@ -8,7 +8,7 @@
 
 # Importing the .csv file into a dataframe called NI_postcode_data
 
-NI_postcode_data <- read.csv('NIPostcodes.csv', header = F)
+NI_postcode_data <- read.csv('NIPostcodes.csv', header = FALSE)
 NI_postcode_data
 # Showing the total number of rows, structure and first 10 rows of the data
 
