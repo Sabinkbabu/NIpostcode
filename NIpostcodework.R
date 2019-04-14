@@ -148,7 +148,7 @@ head(cleanNIPostcode, 2)
 new_postcode <- cleanNIPostcode[, c(6, 13)]
 head(new_postcode, 10)
 
-# Finding the popular postcode 
+# Finding the popular postcode using ddpply function
 
 library(plyr)
 new_postcode <- ddply(new_postcode, .(Primary.Thorfare, Postcode), nrow)
@@ -162,9 +162,18 @@ colnames(new_postcode) <- c("Primary.Thorfare", "Postcode", "Number_of_Postcodes
 # Removing duplicates in the new_postcode data  
 
 new_postcode <- new_postcode[!duplicated(new_postcode$Primary.Thorfare),]
+
+# to check that postcode function has got any null values
+
 sum(is.na(new_postcode$Postcode))
+
+# creating a new postcode data without any null values for postcodes
+
 new_postcode <- subset(new_postcode, !is.na(Postcode), select = c(Primary.Thorfare, Postcode, Number_of_Postcodes))
 new_postcode
+
+# finding the postcodes available for the locations
+
 new_postcode <- ddply(new_postcode, .(Primary.Thorfare, Postcode), nrow)
 colnames(new_postcode) <- c("Primary.Thorfare", "Postcode", "Number_of_Postcodes")
 str(new_postcode)
@@ -192,27 +201,25 @@ chart_data <- updated_random_sample
 chart_data[order(chart_data$Postcode == 'BT1', chart_data$Crime.type),  ]
 chart_data
 
-# Creating a new chart dataset which contains postcode = 'BT1'
+# Filtering the data to a new chart dataset which contains postcode = 'BT1'
 
 new_chart <- filter(chart_data, grepl('BT1', Postcode))
 new_chart
 new_chart[order(new_chart$Postcode == 'BT1', new_chart$Crime.type),  ]
 str(new_chart)
 
-# Summary of crime type with respect to Postcode and location
+# Summary of crime type with respect to Postcode = 'BT1'
 
-crime_type <- data_frame(new_chart$Crime.type)
-crime_type <- ddply(crime_type, .(new_chart$Crime.type), nrow)
-colnames(crime_type) <- c('Crime_type', 'Count')
-crime_type
+BT1_summary_chart <- as.data.frame(summary(new_chart$Crime.type))
+BT1_summary_chart
 
-# Creating the barplot of crime type in chart_data
+# Creating the barplot for crime type in chart_data with postcode = BT1
 
-crime_data <- table(chart_data$Crime.type) 
-barplot(crime_data, main = 'Frequency of crime type',
-        xlab = 'Crime type',
-        ylab = 'Frequency',
-        col= "blue")
+barplot(BT1_summary_chart[,1], col='red' , las=1, names.arg="",main = "Crime Summary", xlab = 'Crime type',
+                     ylab="Crime Count")
+text(BT1_summary_chart[,1], labels = rownames(BT1_summary_chart))
+
+
 
 
 
