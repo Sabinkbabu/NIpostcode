@@ -115,6 +115,8 @@ AllNICrimeData$Location <- gsub( "On or near ", "", AllNICrimeData$Location)
 
 AllNICrimeData$Location <- factor(AllNICrimeData$Location)
 
+# Assigning NA's to empty Location attributes
+
 AllNICrimeData$Location[AllNICrimeData$Location == ""] <- NA
 
 sum(is.na(AllNICrimeData$Location))
@@ -132,18 +134,21 @@ random_crime_sample
 
 nrow(random_crime_sample)
 
+# Importing cleanNIPostcode data for the reference of Postcodes
+
 library(dplyr)
 
 cleanNIPostcode <- read.csv("C:\\Users\\sabin\\Documents\\NIpostcode\\CleanNIPostcodeData.csv")
 
-# In order to compare change both Primary_thorfare and Location to upper case
+# Inorder to compare the primary.Thorfare and Location attributes both of them should be of same structure and string format
+# so changing both of the attributes to uppercase string format
 
 random_crime_sample$Location <- toupper(random_crime_sample$Location)
 cleanNIPostcode$Primary.Thorfare <- toupper(cleanNIPostcode$Primary.Thorfare)
 head(random_crime_sample, 2)
 head(cleanNIPostcode, 2)
 
-# creating a new_postcode dataset with Primary thorfare and Postcode
+# creating a new_postcode dataset with Primary thorfare and Postcode attributes from cleanNIPostcode datset
 
 new_postcode <- cleanNIPostcode[, c(6, 13)]
 head(new_postcode, 10)
@@ -173,6 +178,8 @@ new_postcode <- subset(new_postcode, !is.na(Postcode), select = c(Primary.Thorfa
 new_postcode
 
 # finding the postcodes available for the locations
+# Shwoing the number of postcodes available for locations
+# to find the popularity
 
 new_postcode <- ddply(new_postcode, .(Primary.Thorfare, Postcode), nrow)
 colnames(new_postcode) <- c("Primary.Thorfare", "Postcode", "Number_of_Postcodes")
@@ -183,11 +190,15 @@ str(new_postcode)
 random_crime_sample$Postcode <- NA
 head(random_crime_sample, 5)
 
-# Adding values to the Postcode attribute 
+# Adding values to the Postcode attribute
+# It only adds the when the location and primary thorfare attributes of both datasets match each other
 
 random_crime_sample$Postcode <- new_postcode$Postcode[match(random_crime_sample$Location, new_postcode$Primary.Thorfare)]
 str(random_crime_sample)
 nrow(random_crime_sample)
+head(random_crime_sample, 5)
+
+# Saving the random crime sample dataset to an external csv file
 
 write.csv(random_crime_sample, 'C:\\Users\\sabin\\Documents\\NIpostcode\\random_crime_sample.csv') 
 
@@ -215,7 +226,7 @@ BT1_summary_chart
 
 # Creating the barplot for crime type in chart_data with postcode = BT1
 
-barplot(BT1_summary_chart[,1], col='red' , las=1, names.arg="",main = "Crime Summary", xlab = 'Crime type',
+barplot(BT1_summary_chart[,1], col='red' , las=1, names.arg="",main = "Crime Summary for Postcode BT1", xlab = 'Crime type',
                      ylab="Crime Count")
 text(BT1_summary_chart[,1], labels = rownames(BT1_summary_chart))
 
